@@ -2,9 +2,9 @@ package com.example.interfaz_pelicula.ui.theme.pantalla
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.gestures.snapping.SnapPosition
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -18,7 +18,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.interfaz_pelicula.ui.theme.moleculas.FormularioTextoConBoton
 import com.example.interfaz_pelicula.R
-
+import com.example.interfaz_pelicula.ui.theme.moleculas.Amarillo_Dorado
+import com.example.interfaz_pelicula.ui.theme.moleculas.Marron_Obscuro
 
 val VerdeFosforescente = Color(0xFF00BB2D)
 val Marron_Obscuro = Color(0xFF743012)
@@ -60,7 +61,7 @@ enum class Personaje(
 }
 
 @Composable
-fun MenuJumanjiSencillo() {
+fun MenuJumanjiSencillo(onIniciarPartida: (() -> Unit)? = null) {
     var inputNumero by remember { mutableStateOf("") }
     var pantallaActual by remember { mutableStateOf("menu") }
     var personajeSeleccionado by remember { mutableStateOf(Personaje.Smolder_Bravestone) }
@@ -71,14 +72,14 @@ fun MenuJumanjiSencillo() {
                 Text(
                     "\nBienvenido a Jumanji",
                     modifier = Modifier
-                        .fillMaxWidth()                  // <- esto permite centrar el texto
+                        .fillMaxWidth()
                         .background(Marron_Obscuro)
                         .padding(8.dp),
                     fontSize = 40.sp,
                     color = Amarillo_Dorado,
                     fontWeight = FontWeight.ExtraBold,
                     fontFamily = jumanjiFont,
-                    textAlign = TextAlign.Center        // <- ahora funciona
+                    textAlign = TextAlign.Center
                 )
                 Text(
                     "\nElige qué avatar quieres ser. Escribiendo el número:\n",
@@ -89,15 +90,13 @@ fun MenuJumanjiSencillo() {
                 )
 
                 Personaje.values().forEachIndexed { index, personaje ->
-                    Text("${index + 1}. ${personaje.name} " +
-                            "(${personaje.actor})",
+                    Text("${index + 1}. ${personaje.name} (${personaje.actor})",
                         fontFamily = jumanjiFont,
                         color = Rosa,
                         fontWeight = FontWeight.SemiBold
-                        )
+                    )
                 }
 
-                // Espacio vertical antes del formulario
                 Spacer(modifier = Modifier.height(16.dp))
 
                 FormularioTextoConBoton(
@@ -163,15 +162,14 @@ fun MenuJumanjiSencillo() {
                             color = Marron_Obscuro,
                             fontFamily = jumanjiFont,
                             fontSize = 18.sp,
-                            textAlign = TextAlign.Center,
+                            textAlign = TextAlign.Center
                         )
-                        personajeSeleccionado.
-                        fortalezas.forEach {
+                        personajeSeleccionado.fortalezas.forEach {
                             Text("• $it",
                                 fontFamily = jumanjiFont,
                                 color = VerdeFosforescente,
                                 fontWeight = FontWeight.Black
-                        )
+                            )
                         }
                     }
 
@@ -184,23 +182,37 @@ fun MenuJumanjiSencillo() {
                             .clip(RoundedCornerShape(8.dp))
                             .border(1.dp, Marron_Obscuro, RoundedCornerShape(8.dp))
                             .background(Color.White, RoundedCornerShape(8.dp))
-                            .padding(10.dp),
+                            .padding(10.dp)
                     ) {
-                        Text("DEBILIDADES\n",
+                        Text(
+                            "DEBILIDADES\n",
                             fontWeight = FontWeight.Black,
                             color = Marron_Obscuro,
                             fontFamily = jumanjiFont,
                             fontSize = 18.sp,
-                            textAlign = TextAlign.Center,
+                            textAlign = TextAlign.Center
                         )
-                        personajeSeleccionado.
-                        debilidades.forEach {
+                        personajeSeleccionado.debilidades.forEach {
                             Text("• $it",
                                 fontFamily = jumanjiFont,
                                 color = VerdeFosforescente,
                                 fontWeight = FontWeight.Black
-                                )
+                            )
                         }
+                    }
+                }
+
+                // Botón para iniciar partida
+                onIniciarPartida?.let {
+                    androidx.compose.material3.Button(
+                        onClick = it,
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Marron_Obscuro,
+                            contentColor = Amarillo_Dorado
+                        ),
+                        modifier = Modifier.fillMaxWidth().padding(top = 20.dp)
+                    ) {
+                        androidx.compose.material3.Text("Iniciar Partida")
                     }
                 }
             }
